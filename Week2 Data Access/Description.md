@@ -9,5 +9,7 @@ It will be divided into 4 specific practice.<br>
 3.[Programmatically print the rows of the dataframe](https://stackoverflow.com/questions/16476924/how-to-iterate-over-rows-in-a-dataframe-in-pandas)<br>
 4.[Save the dataframe as a CSV file](https://chrisalbon.com/python/data_wrangling/pandas_saving_dataframe_as_csv/)<br>
 
+[Sample code](https://github.com/szhbest/COMP9321/blob/week2/Week2%20Data%20Access/rd_and_wrt_csv.py)
+
 ## 2. Relational DBs (SQLite)
 >
