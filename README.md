@@ -1,3 +1,4 @@
 # COMP9321
 
-This repository is for COMP9321 from UNSW.
+COMP9321: Data Services Engineering
+These materials come from UNSW 2020T1.
