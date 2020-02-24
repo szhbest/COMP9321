@@ -20,7 +20,7 @@ def print_dataframe(dataframe, print_col=True, print_row=True):
     '''
 
     if print_row:
-        for index, row in dataframe.iterrow():
+        for index, row in dataframe.iterrows():
             print(' '.join(str(row[column]) for column in dataframe))
 
 
