@@ -10,5 +10,10 @@ It will be divided into 4 specific practice.<br>
 4.[Save the dataframe as a CSV file](https://chrisalbon.com/python/data_wrangling/pandas_saving_dataframe_as_csv/)<br>
 [Sample code](https://github.com/szhbest/COMP9321/blob/week2/Week2%20Data%20Access/rd_and_wrt_csv.py)
 
-## 2. Relational DBs (SQLite)
->
+## 2. Relational DBs(SQLite)
+>learn how to store a dataframe in SQLite and how query the database and create a dataframe.<br>
+[store dataframe in sqlite database--like write](https://pandas.pydata.org/pandas-docs/version/0.22/generated/pandas.DataFrame.to_sql.html)<br>
+[how to query the database and load the data into a new dataframe--like read](https://pythonspot.com/sqlite-database-with-pandas/)<br>
+[Sample code](https://github.com/szhbest/COMP9321/blob/week2/Week2%20Data%20Access/rd_wrt_sqlite.py)
+
+## 3. NoSQL DBs(MongoDB)
