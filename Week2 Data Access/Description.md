@@ -17,6 +17,10 @@ It will be divided into 4 specific practice.<br>
 [Sample code](https://github.com/szhbest/COMP9321/blob/master/Week2%20Data%20Access/rd_wrt_sqlite.py)
 
 ## 3. NoSQL DBs(MongoDB)
+>[What is database, collection, document in MongoDB](https://www.cnblogs.com/kkdn/p/9435257.html)<br>
+[How to write dataframe into MongoDB](https://stackoverflow.com/questions/20167194/insert-a-pandas-dataframe-into-mongodb-using-pymongo)<br>
+[How to query the MongoDB and load the data into dataframe](https://stackoverflow.com/questions/16249736/how-to-import-data-from-mongodb-to-pandas)<br>
+[Sample Code](https://github.com/szhbest/COMP9321/blob/master/Week2%20Data%20Access/rd_wrt_mongoDB.py)
 ## 4. RESTful
->First, use **request** to get the json, then create the dataframe for the json.
-[Sample code](https://github.com/szhbest/COMP9321/blob/master/Week2%20Data%20Access/rd_wrt_RESTful.py)
+>First, use **request** to get the json, then create the dataframe for the json.<br>
+[Sample code] (https://github.com/szhbest/COMP9321/blob/master/Week2%20Data%20Access/rd_wrt_RESTful.py)
