@@ -17,3 +17,6 @@ It will be divided into 4 specific practice.<br>
 [Sample code](https://github.com/szhbest/COMP9321/blob/master/Week2%20Data%20Access/rd_wrt_sqlite.py)
 
 ## 3. NoSQL DBs(MongoDB)
+## 4. RESTful
+>First, use **request** to get the json, then create the dataframe for the json.
+[Sample code](https://github.com/szhbest/COMP9321/blob/master/Week2%20Data%20Access/rd_wrt_RESTful.py)
