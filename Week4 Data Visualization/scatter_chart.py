@@ -9,6 +9,7 @@ if __name__ == '__main__':
     iris_file = 'iris.csv'
     iris_df = pd.read_csv(iris_file)
     # print(iris_df)
+    
     setosa = iris_df.query('species == "setosa"')
     virginica = iris_df.query('species == "virginica"')
     versicolor = iris_df.query('species == "versicolor"')
@@ -20,4 +21,5 @@ if __name__ == '__main__':
     ax2 = setosa.plot.scatter(x='petal_length', y='petal_width', label='setosa')
     ax2 = versicolor.plot.scatter(x='petal_length', y='petal_width', label='versicolor', color='g', ax=ax2)
     ax2 = virginica.plot.scatter(x='petal_length', y='petal_width', label='virginica', color='r', ax=ax2)
+    
     plt.show()
