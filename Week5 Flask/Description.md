@@ -6,6 +6,6 @@ This lab mainly talk about Flask-Restplus. REST (Representational State Transfer
 
 [It is an basic example code about Flask-Restplus](https://github.com/szhbest/COMP9321/blob/master/Week5%20Flask/sample.py)<br>
 What we do is:<br>
-## 1. Get a book by its ID (get method)
-## 2. Remove a book by its ID (delete method)
-## 3. Update book information (post method)
+**1. Get a book by its ID (get method)**
+**2. Remove a book by its ID (delete method)**
+**3. Update book information (post method)**
