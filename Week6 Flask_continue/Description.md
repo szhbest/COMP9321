@@ -12,6 +12,7 @@ In this lab, we will extend the py file that we produced in week5, and add a new
 >@api.response<br>
 @api.doc<br>
 @api.description<br>
+[Reference](https://flask-restplus.readthedocs.io/en/stable/swagger.html#)
 
 [Here is the sample code](https://github.com/szhbest/COMP9321/blob/master/Week6%20Flask_continue/demo.py)
 
