@@ -8,10 +8,10 @@ In this lab, we will extend the py file that we produced in week5, and add a new
 **The second method is to Add a new book**<br>
 >In this task, we will define a "post" method and its implementation is similar to week5's "put" method.<br>
 
-**Finally, we will improve Swagger Documentation manually by using:<br>
+**Finally, we will improve Swagger Documentation manually by using:**<br>
 >@api.response<br>
 @api.doc<br>
 @api.description<br>
 
-[Here is the sample code]
+[Here is the sample code](https://github.com/szhbest/COMP9321/blob/master/Week6%20Flask_continue/demo.py)
 
