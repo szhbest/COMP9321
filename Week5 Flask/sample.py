@@ -47,7 +47,9 @@ class Books(Resource):
         for key in book:
             if key not in book_model.keys():
                 return {"message": "Property {} is invalid".format(key)}, 400
-            df.loc[id, key] = book[key]
+            # not introduce a new column called 'Identifier'
+            if not key == 'Identifier':
+                df.loc[id, key] = book[key]
 
         return {"message": "Book {} has been updated".format(id)}, 200
 
