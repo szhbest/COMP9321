@@ -1,157 +1,91 @@
-import pandas as pd
-from flask import Flask, request
-from flask_restplus import Api, Resource, fields, reqparse, inputs
-import json
+import requests
 
 
-app = Flask(__name__)
-api = Api(app, default='Books', title='Book Dataset',
-          description='This is just a simple example to show how publish data as a service.')
-
-book_model = api.model('Book', {
-    'Flickr_URL': fields.String,
-    'Publisher': fields.String,
-    'Author': fields.String,
-    'Title': fields.String,
-    'Date_of_Publication': fields.Integer,
-    'Identifier': fields.Integer,
-    'Place_of_Publication': fields.String
-})
-
-parser = reqparse.RequestParser()
-parser.add_argument('order', choices=list(column for column in book_model.keys()))
-parser.add_argument('ascending', type=inputs.boolean)
+# type(book) = dict
+def print_book(book):
+    print("Book {")
+    for key in book.keys():
+        attr = str(key)
+        val = str(book[key])
+        print("\t" + attr + ":" + val)
+    print("}")
 
 
-@api.route('/books')
-class BookList(Resource):
-    @api.response(200, 'Successful')
-    @api.doc(description='Get all books')
-    def get(self):
-        # get books as JSON string
-        args = parser.parse_args()
-
-        # retrieve the query parameters
-        order_by = args.get('order')
-        ascending = args.get('ascending', True)
-
-        if order_by:
-            df.sort_values(by=order_by, inplace=True, ascending=ascending)
-
-        json_str = df.to_json(orient='index')
-
-        # convert the string JSON to a real JSON
-        ds = json.loads(json_str)
-
-        ret = []
-        for idx in ds:
-            book = ds[idx]
-            book['Identifier'] = int(idx)
-            ret.append(book)
-
-        return ret
-
-    @api.response(201, 'Book Created Successfully')
-    @api.response(400, 'Validation Error')
-    @api.doc(description='Add a new book')
-    @api.expect(book_model)
-    def post(self):
-        book = request.json
-
-        if 'Identifier' not in book:
-            return {"message": 'Missing Identifier'}, 400
-
-        id = book['Identifier']
-        if id in df.index:
-            return {"message": 'Identifier {} is already existed'.format(id)}, 400
-
-        for key in book:
-            if key not in book_model.keys():
-                return {"message": 'Property {} is invalid'.format(key)}, 400
-            # not introduce a new column called 'Identifier'
-            if not key == 'Identifier':
-                df.loc[id, key] = book[key]
-        return {"message": 'Book {} has been added'.format(id)}, 200
-
-
-@api.route('/book/<int:id>')
-@api.param('id', 'The Book identifier')
-class Books(Resource):
-    @api.response(404, 'Book was not found')
-    @api.response(200, 'Successful')
-    @api.doc(description="Get a book by its ID")
-    def get(self, id):
-        if id not in df.index:
-            # api.abort(404, "Book {} doesn't exist".format(id))
-            return {"message": "Book {} doesn't exist".format(id)}, 404
-
-        book = dict(df.loc[id])
+def get_book(id):
+    r = requests.get("http://127.0.0.1:5000/book/" + str(id))
+    # get only one book, type(book) = dict
+    book = r.json()
+    print("Get status Code:" + str(r.status_code))
+    if r.ok:
+        print_book(book)
         return book
+    else:
+        print('Error: ' + book['message'])
 
-    @api.response(404, 'Book was not found')
-    @api.response(200, 'Successful')
-    @api.doc(description="Delete a book by its ID")
-    def delete(self, id):
-        if id not in df.index:
-            # api.abort(404, "Book {} doesn't exist".format(id))
-            return {"message": "Book {} doesn't exist".format(id)}, 404
 
-        df.drop(id, inplace=True)
-        return {'message': 'Book {} has been removed'.format(id)}, 200
-
-    @api.response(404, 'Book was not found')
-    @api.response(200, 'Successful')
-    @api.response(400, 'Validation Error')
-    @api.doc(description='Update a book by its ID')
-    @api.expect(book_model)
-    def put(self, id):
-        if id not in df.index:
-            # api.abort(404, "Book {} doesn't exist".format(id))
-            return {"message": "Book {} doesn't exist".format(id)}, 404
-
-        # or use "book = api.payload"
-        book = request.json
-
-        if 'Identifier' in book and id != book['Identifier']:
-            return {"message": "Identifier {} cannot be changed".format(id)}, 400
-
-        for key in book:
-            if key not in book_model.keys():
-                return {"message": "Property {} is invalid".format(key)}, 400
-            # not introduce a new column called 'Identifier'
-            if not key == 'Identifier':
-                df.loc[id, key] = book[key]
-
-        return {"message": "Book {} has been updated".format(id)}, 200
+def remove_book(id):
+    r = requests.delete("http://127.0.0.1:5000/book/" + str(id))
+    print("Delete status Code:" + str(r.status_code))
+    print(r.json()['message'])
 
 
 if __name__ == '__main__':
-    columns_to_drop = ['Edition Statement',
-                       'Corporate Author',
-                       'Corporate Contributors',
-                       'Former owner',
-                       'Engraver',
-                       'Contributors',
-                       'Issuance type',
-                       'Shelfmarks'
-                       ]
-    csv_file = "Books.csv"
-    df = pd.read_csv(csv_file)
 
-    # drop unnecessary columns
-    df.drop(columns_to_drop, inplace=True, axis=1)
+    '''
+    GET: Programmatically get and print top-5 books ordered by 'Date_of_Publication' in an ascending order.
+    '''
+    r = requests.get("http://127.0.0.1:5000/books",
+                     params={'order': 'Date_of_Publication', 'ascending': True})
+    print("Status Code:" + str(r.status_code))
+    # type(books) = list, type(books[i]) = dict
+    books = r.json()
+    for i in range(5):
+        print_book(books[i])
 
-    # clean the date of publication & convert it to numeric data
-    new_date = df['Date of Publication'].str.extract(r'^(\d{4})', expand=False)
-    new_date = pd.to_numeric(new_date)
-    new_date = new_date.fillna(0)
-    df['Date of Publication'] = new_date
+    '''
+    POST: Programmatically add a new book to the dataset
+    '''
+    new_book = {
+        "Date_of_Publication": 2018,
+        "Publisher": "UNSW",
+        "Author": "Nobody",
+        "Title": "Nothing",
+        "Flickr_URL": "http://somewhere",
+        "Identifier": 2,
+        "Place_of_Publication": "Sydney"
+    }
 
-    # replace spaces in the name of columns
-    df.columns = [c.replace(' ', '_') for c in df.columns]
+    r = requests.post("http://127.0.0.1:5000/books", json=new_book)
 
-    # set the index column; this will help us to find books with their ids
-    df.set_index('Identifier', inplace=True)
+    print("Status Code:" + str(r.status_code))
+    resp = r.json()
+    print(resp['message'])
 
-    # run the application
-    app.run(debug=True)
+    '''
+    PUT: Programmatically update the book which its ID is 206 by changing the author name to 'Nobody'
+    '''
+    print("***** Book information before update *****")
+    book = get_book(206)
+
+    # update the book information
+    print("***** Updating Book Information *****")
+    book['Author'] = 'Nobody'
+    r = requests.put("http://127.0.0.1:5000/book/206", json=book)
+    print("Put status Code:" + str(r.status_code))
+    print(r.json()['message'])
+
+    print("***** Book information after update *****")
+    book = get_book(206)
+
+    '''
+    DELETE: Programmatically delete the book which its ID is 206
+    '''
+    print("***** Book information before update *****")
+    get_book(206)
+
+    # update the book information
+    print("***** Deleting Book *****")
+    remove_book(206)
+
+    print("***** Book information after Delete *****")
+    get_book(206)
