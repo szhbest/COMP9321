@@ -82,7 +82,8 @@ class Books(Resource):
     @api.doc(description="Get a book by its ID")
     def get(self, id):
         if id not in df.index:
-            api.abort(404, "Book {} doesn't exist".format(id))
+            # api.abort(404, "Book {} doesn't exist".format(id))
+            return {"message": "Book {} doesn't exist".format(id)}, 404
 
         book = dict(df.loc[id])
         return book
@@ -92,10 +93,11 @@ class Books(Resource):
     @api.doc(description="Delete a book by its ID")
     def delete(self, id):
         if id not in df.index:
-            api.abort(404, "Book {} doesn't exist".format(id))
+            # api.abort(404, "Book {} doesn't exist".format(id))
+            return {"message": "Book {} doesn't exist".format(id)}, 404
 
         df.drop(id, inplace=True)
-        return {'Note': 'Book {} has been removed'.format(id)}, 200
+        return {'message': 'Book {} has been removed'.format(id)}, 200
 
     @api.response(404, 'Book was not found')
     @api.response(200, 'Successful')
@@ -104,7 +106,8 @@ class Books(Resource):
     @api.expect(book_model)
     def put(self, id):
         if id not in df.index:
-            api.abort(404, "Book {} doesn't exist".format(id))
+            # api.abort(404, "Book {} doesn't exist".format(id))
+            return {"message": "Book {} doesn't exist".format(id)}, 404
 
         # or use "book = api.payload"
         book = request.json
