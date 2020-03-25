@@ -12,6 +12,7 @@ It will be divided into 4 specific practice.<br>
 
 ## 2. Relational DBs(SQLite)
 >Learn how to store a dataframe in SQLite and how query the database and create a dataframe.<br>
+[Good tutorial of SQLite3](https://likegeeks.com/python-sqlite3-tutorial/#Insert-in-Table)<br>
 [Store dataframe in sqlite database](https://pandas.pydata.org/pandas-docs/version/0.22/generated/pandas.DataFrame.to_sql.html)<br>
 [How to query the database and load the data into a new dataframe](https://pythonspot.com/sqlite-database-with-pandas/)<br>
 [Sample code](https://github.com/szhbest/COMP9321/blob/master/Week2%20Data%20Access/rd_wrt_sqlite.py)
