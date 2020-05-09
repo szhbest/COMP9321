@@ -1,1 +1,7 @@
 ![image1](https://github.com/szhbest/COMP9321/blob/master/ass1/1.png)
+![image2](https://github.com/szhbest/COMP9321/blob/master/ass1/2.png)
+![image3](https://github.com/szhbest/COMP9321/blob/master/ass1/3.png)
+![image4](https://github.com/szhbest/COMP9321/blob/master/ass1/4.png)
+![image5](https://github.com/szhbest/COMP9321/blob/master/ass1/5.png)
+![image6](https://github.com/szhbest/COMP9321/blob/master/ass1/6.png)
+![image7](https://github.com/szhbest/COMP9321/blob/master/ass1/7.png)
