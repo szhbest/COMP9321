@@ -1,238 +1,104 @@
-import ast
+import pandas as pd
+import numpy as np
 import json
 import matplotlib.pyplot as plt
-import pandas as pd
-import sys
-import os
-
-studentid = os.path.basename(sys.modules[__name__].__file__)
 
 
-#################################################
-# Your personal methods can be here ...
-#################################################
+if __name__ == '__main__':
+    c_file = 'credits.csv'
+    m_file = 'movies.csv'
+    c_df = pd.read_csv(c_file)
+    m_df = pd.read_csv(m_file)
 
-
-def log(question, output_df, other):
-    print("--------------- {}----------------".format(question))
-    if other is not None:
-        print(question, other)
-    if output_df is not None:
-        print(output_df.head(5).to_string())
-
-
-def question_1(movies, credits):
     """
-    :param movies: the path for the movie.csv file
-    :param credits: the path for the credits.csv file
-    :return: df1
-            Data Type: Dataframe
-            Please read the assignment specs to know how to create the output dataframe
+    q1: merge two datasets based on "id" columns
     """
+    merge_df = pd.merge(c_df, m_df, how='inner', left_on='id', right_on='id')
+    # print(merge_df.shape, c_df.shape, m_df.shape)
 
-    #################################################
-    # Your code goes here ...
-    m_df = pd.read_csv(movies)
-    c_df = pd.read_csv(credits)
-    df1 = pd.merge(c_df, m_df, how='inner', left_on='id', right_on='id')
-    #################################################
-
-    log("QUESTION 1", output_df=df1, other=df1.shape)
-    return df1
-
-
-def question_2(df1):
     """
-    :param df1: the dataframe created in question 1
-    :return: df2
-            Data Type: Dataframe
-            Please read the assignment specs to know how to create the output dataframe
+    q2: remove irrelevant columns
     """
-
-    #################################################
-    # Your code goes here ...
     cols2keep = {'id', 'title', 'popularity', 'cast', 'crew',
                  'budget', 'genres', 'original_language', 'production_companies',
                  'production_countries', 'release_date', 'revenue', 'runtime',
                  'spoken_languages', 'vote_average', 'vote_count'}
-    all_cols = set(df1.columns)
+    all_cols = set(merge_df.columns)
     col2drop = list(all_cols - cols2keep)
-    df2 = df1.drop(col2drop, axis=1)
-    #################################################
+    merge_df.drop(col2drop, inplace=True, axis=1)
+    # print(merge_df)
 
-    log("QUESTION 2", output_df=df2, other=(len(df2.columns), sorted(df2.columns)))
-    return df2
-
-
-def question_3(df2):
     """
-    :param df2: the dataframe created in question 2
-    :return: df3
-            Data Type: Dataframe
-            Please read the assignment specs to know how to create the output dataframe
+    q3: set the index of the resultant dataframe as 'id'
     """
+    merge_df.set_index('id', inplace=True)
+    # print(merge_df)
 
-    #################################################
-    # Your code goes here ...
-    df3 = df2.set_index('id')
-    #################################################
-
-    log("QUESTION 3", output_df=df3, other=df3.index.name)
-    return df3
-
-
-def question_4(df3):
     """
-    :param df3: the dataframe created in question 3
-    :return: df4
-            Data Type: Dataframe
-            Please read the assignment specs to know how to create the output dataframe
+    q4: drop all rows where budget is 0
     """
-
-    #################################################
-    # Your code goes here ...
     rid_with_budget_0 = []
-    for index, row in df3.iterrows():
+    for index, row in merge_df.iterrows():
         if row['budget'] == 0:
             rid_with_budget_0.append(index)
-    df4 = df3.drop(rid_with_budget_0)
-    #################################################
+    merge_df.drop(rid_with_budget_0, inplace=True)
+    # print(merge_df)
 
-    log("QUESTION 4", output_df=df4, other=(df4['budget'].min(), df4['budget'].max(), df4['budget'].mean()))
-    return df4
-
-
-def question_5(df4):
     """
-    :param df4: the dataframe created in question 4
-    :return: df5
-            Data Type: Dataframe
-            Please read the assignment specs to know how to create the output dataframe
+    q5: add a new column defined by "(revenue - budget)/budget", name it "success_impact"
     """
+    merge_df['success_impact'] = (merge_df['revenue'] - merge_df['budget']) / merge_df['budget']
+    # print(merge_df)
 
-    #################################################
-    # Your code goes here ...
-    df5 = df4
-    df5['success_impact'] = (df4['revenue'] - df4['budget']) / df4['budget']
-    #################################################
-
-    log("QUESTION 5", output_df=df5,
-        other=(df5['success_impact'].min(), df5['success_impact'].max(), df5['success_impact'].mean()))
-    return df5
-
-
-def question_6(df5):
     """
-    :param df5: the dataframe created in question 5
-    :return: df6
-            Data Type: Dataframe
-            Please read the assignment specs to know how to create the output dataframe
+    q6: normalize the "popularity" by scaling between 0 to 100.(float number)
     """
-
-    #################################################
-    # Your code goes here ...
-    maximum = df5['popularity'].max()
-    minimum = df5['popularity'].min()
-    df6 = df5
-    df6['popularity'] = df5[['popularity']].apply(
+    maximum = merge_df['popularity'].max()
+    minimum = merge_df['popularity'].min()
+    merge_df['popularity'] = merge_df[['popularity']].apply(
         lambda x: 100 * (x - minimum) / (maximum - minimum))
-    #################################################
+    # print(merge_df['popularity'])
 
-    log("QUESTION 6", output_df=df6, other=(df6['popularity'].min(), df6['popularity'].max(), df6['popularity'].mean()))
-    return df6
-
-
-def question_7(df6):
     """
-    :param df6: the dataframe created in question 6
-    :return: df7
-            Data Type: Dataframe
-            Please read the assignment specs to know how to create the output dataframe
+    q7: change the data type of the "popularity" column to (int16)
     """
+    merge_df['popularity'] = merge_df['popularity'].astype('int16')
+    # print(merge_df['popularity'])
 
-    #################################################
-    # Your code goes here ...
-    df7 = df6
-    df7['popularity'] = df7['popularity'].astype('int16')
-    #################################################
-
-    log("QUESTION 7", output_df=df7, other=df7['popularity'].dtype)
-    return df7
-
-
-def question_8(df7):
     """
-    :param df7: the dataframe created in question 7
-    :return: df8
-            Data Type: Dataframe
-            Please read the assignment specs to know how to create the output dataframe
+    q8: clean the "cast" column 
     """
-
-    #################################################
-    # Your code goes here ...
     def clean_cast(s):
         new_list = eval(s)
         name_list = []
         for sub_dict in new_list:
             name_list.append(sub_dict['character'])
         return ', '.join(c for c in sorted(name_list))
-    df8 = df7
-    df8['cast'] = df8['cast'].apply(clean_cast)
-    #################################################
+    merge_df['cast'] = merge_df['cast'].apply(clean_cast)
+    # print(merge_df['cast'])
 
-    log("QUESTION 8", output_df=df8, other=df8["cast"].head(10).values)
-    return df8
-
-
-def question_9(df8):
     """
-    :param df9: the dataframe created in question 8
-    :return: movies
-            Data Type: List of strings (movie titles)
-            Please read the assignment specs to know how to create the output
+    q9: return a list containing the names of the top 10 movies according to the number of movie characters
     """
-
-    #################################################
-    # Your code goes here ...
     char_dict = {}
-    for index, row in df8.iterrows():
+    for index, row in merge_df.iterrows():
         temp = row['cast'].split(',')
         char_dict[index] = len(temp)
     top10 = sorted(char_dict.items(), key=lambda x: x[1], reverse=True)[:10]
-    movies = [df8['title'][rid] for rid, num in top10]
-    #################################################
+    top10_movie_list = [merge_df['title'][rid] for rid, num in top10]
 
-    log("QUESTION 9", output_df=None, other=movies)
-    return movies
-
-
-def question_10(df8):
     """
-    :param df8: the dataframe created in question 8
-    :return: df10
-            Data Type: Dataframe
-            Please read the assignment specs to know how to create the output dataframe
+    q10: sort the dataframe by the release date
     """
-
-    #################################################
-    # Your code goes here ...
-    df8['release_date'] = pd.to_datetime(df8['release_date'], dayfirst=True)
-    df10 = df8.sort_values(by=['release_date'], ascending=False)
-    #################################################
-
-    log("QUESTION 10", output_df=df10, other=df10["release_date"].head(5).to_string().replace("\n", " "))
-    return df10
+    merge_df['release_date'] = pd.to_datetime(merge_df['release_date'], dayfirst=True)
+    sort_merge_df = merge_df.sort_values(by=['release_date'], ascending=False)
+    # print(sort_merge_df['release_date'].to_string())
 
 
-def question_11(df10):
     """
-    :param df10: the dataframe created in question 10
-    :return: nothing, but saves the figure on the disk
+    q11:  Plot a pie chart, showing the distribution of genres in the dataset
     """
-
-    #################################################
-    # Your code goes here ...
-    genres = df10['genres']
+    genres = merge_df['genres']
 
     def get_genres(s):
         new_list = eval(s)
@@ -244,27 +110,22 @@ def question_11(df10):
     genres = genres.apply(get_genres)
     temp = pd.Series(data=[j for i in genres for j in i])
     pie_chart = temp.value_counts()
+    # print(pie_chart)
     percent = [100 * i / pie_chart.sum() for i in pie_chart]
     # print(percent)
     labels = ['{0} - {1:1.2f} %'.format(i, j) for i, j in zip(pie_chart.index, percent)]
     # print(labels)
-    ax_pie = pie_chart.plot.pie(labels=['' for k in pie_chart], title='Genres')
+    ax_pie = pie_chart.plot.pie(labels=['' for k in pie_chart], title='Genres', figsize=(7, 7))
     ax_pie.set_ylabel('')
-    plt.legend(labels=labels, loc='lower right', bbox_to_anchor=(0, 0), fontsize=6)
-    #################################################
+    plt.legend(labels=labels, loc='lower right', bbox_to_anchor=(0, 0), fontsize=10)
+    plt.show()
 
-    plt.savefig("{}-Q11.png".format(studentid))
-
-
-def question_12(df10):
     """
-    :param df10: the dataframe created in question 10
-    :return: nothing, but saves the figure on the disk
+    q12:  Plot a bar chart of the countries in which movies have been produced. 
+          For each county you need to show the count of movies.
+          Countries should be alphabetically sorted according to their names.
     """
-
-    #################################################
-    # Your code goes here ...
-    production_countries = df10['production_countries']
+    production_countries = merge_df['production_countries']
 
     def get_countries(s):
         new_list = eval(s)
@@ -278,24 +139,19 @@ def question_12(df10):
     bar_chart = temp.value_counts()
     bar_chart = bar_chart.sort_index(ascending=True)
     # print(bar_chart)
-    fig, ax = plt.subplots()
-    ax = bar_chart.plot.bar(title='Production Country', fontsize=5)
-    #################################################
+    bar_chart.plot.bar(fontsize=8)
+    plt.title('Production Country')
+    plt.show()
 
-    plt.savefig("{}-Q12.png".format(studentid), bbox_inches='tight')
-
-
-def question_13(df10):
     """
-    :param df10: the dataframe created in question 10
-    :return: nothing, but saves the figure on the disk
+    q13: Plot a scatter chart with x axis being "vote_average" and y axis being "success_impact".
+          Ink bubbles based on the movie language (e.g, English, French); 
+          In case of having multiple languages for the same movie, you are free to pick any one as you wish.
     """
-
-    #################################################
-    # Your code goes here ...
-    vote_average = df10['vote_average']
-    success_impact = df10['success_impact']
-    language = df10['original_language']
+    vote_average = merge_df['vote_average']
+    success_impact = merge_df['success_impact']
+    language = merge_df['original_language']
+    # language = merge_df['spoken_languages'].apply(lambda x: eval(x)[0]['name'])
     scatter_chart = pd.DataFrame({'vote_average': vote_average, 'success_impact': success_impact,
                                   'language': language})
     groups = scatter_chart.groupby('language')
@@ -305,30 +161,22 @@ def question_13(df10):
 
     import numpy as np
     import matplotlib.cm as cm
+    from matplotlib import font_manager
+
+    # fontP = font_manager.FontProperties()
+    # fontP.set_family(['SimHei', 'nanumgothic'])
+    # fontP.set_size(8)
 
     colors = cm.rainbow(np.linspace(0, 1, len(language_type)))
     i = 0
     for name, group in groups:
         ax = group.plot.scatter(x='vote_average', y='success_impact', ax=ax, label=name, color=[colors[i]])
         i += 1
+        # print(name)
+    # to put the upper left corner of the legend to the upper left corner of the chart(based on (0, 1))
     ax.legend(loc='upper left', bbox_to_anchor=(0, 1), fontsize=8, ncol=2)
-    plt.title('vote_average vs success_impact')
-    #################################################
-
-    plt.savefig("{}-Q13.png".format(studentid))
-
-
-if __name__ == "__main__":
-    df1 = question_1("movies.csv", "credits.csv")
-    df2 = question_2(df1)
-    df3 = question_3(df2)
-    df4 = question_4(df3)
-    df5 = question_5(df4)
-    df6 = question_6(df5)
-    df7 = question_7(df6)
-    df8 = question_8(df7)
-    movies = question_9(df8)
-    df10 = question_10(df8)
-    question_11(df10)
-    question_12(df10)
-    question_13(df10)
+    # plt.title('vote_average vs success_impact')
+    # plt.show()
+    # print(len(language_type))
+    # print(scatter_chart)
+    # print(scatter_chart.to_string())
